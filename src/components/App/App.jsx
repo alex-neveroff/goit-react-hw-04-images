@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { Notify } from 'notiflix';
 import { Container } from './App.styled';
 import { getImagesByName, getPerPage } from 'api/api';
@@ -12,15 +12,9 @@ class App extends Component {
     images: [],
     query: '',
     page: 1,
-    showModal: false,
     showLoadMore: false,
-    largeImage: '',
-    alt: '',
     isLoading: false,
-    imageHeight: 0,
   };
-
-  imageGalleryRef = createRef();
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.query.toLowerCase() !== this.state.query.toLowerCase()) {
@@ -69,18 +63,6 @@ class App extends Component {
     });
   };
 
-  handleImageClick = (largeImageURL, tags) => {
-    this.setState({ largeImage: largeImageURL, alt: tags, isLoading: true });
-
-    this.toggleModal();
-  };
-
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
-
   loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
@@ -95,7 +77,6 @@ class App extends Component {
       this.setState({ showLoadMore: false });
       return;
     }
-
     this.setState({ showLoadMore: true });
   };
 
@@ -105,9 +86,7 @@ class App extends Component {
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmit} />
-        {images && (
-          <ImageGallery images={images} onClick={this.handleImageClick} />
-        )}
+        {images && <ImageGallery images={images} />}
         {isLoading && <Loader />}
         {showLoadMore && !isLoading && <Button onClick={this.loadMore} />}
       </Container>
