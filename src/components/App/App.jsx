@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Notify } from 'notiflix';
 import { Container } from './App.styled';
 import { getImagesByName, getPerPage } from 'api/api';
@@ -7,91 +7,86 @@ import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Loader from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
 
-class App extends Component {
-  state = {
-    images: [],
-    query: '',
-    page: 1,
-    showLoadMore: false,
-    isLoading: false,
-  };
+function App() {
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isShowLoadMore, setIsShowLoadMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.query.toLowerCase() !== this.state.query.toLowerCase()) {
-      this.getGallery();
-    }
-    if (prevState.page < this.state.page) {
-      this.getGallery();
-    }
-  }
+  useEffect(() => {
+    if (query) {
+      const getGallery = async () => {
+        try {
+          setIsLoading(true);
 
-  getGallery = async () => {
-    const { query, page } = this.state;
-
-    try {
-      this.setState({ isLoading: true });
-      const { hits, totalHits } = await getImagesByName(query, page);
-      if (page === 1) {
-        if (totalHits === 0) {
-          Notify.warning(`Found nothing for "${query}"`);
-        } else if (totalHits === 1) {
-          Notify.success(`Found only one image for "${query}"`);
-        } else {
-          Notify.success(`Found ${totalHits} images for "${query}"`);
+          const { hits, totalHits } = await getImagesByName(query, currentPage);
+          if (currentPage === 1) {
+            if (totalHits === 0) {
+              Notify.warning(`Found nothing for "${query}"`);
+            } else if (totalHits === 1) {
+              Notify.success(`Found only one image for "${query}"`);
+            } else {
+              Notify.success(`Found ${totalHits} images for "${query}"`);
+            }
+          }
+          setImages(prevImages => [...prevImages, ...hits]);
+          showLoadMoreButton(totalHits, hits.length);
+        } catch (error) {
+          Notify.failure(error.message);
+        } finally {
+          setIsLoading(false);
         }
-      }
-      this.setState(prevState => ({
-        images: [...prevState.images, ...hits],
-      }));
-      this.showLoadMoreButton(totalHits, hits.length);
-    } catch (error) {
-      Notify.failure(error.message);
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
+      };
+      const showLoadMoreButton = (totalHits, hitsLength) => {
+        const perPage = getPerPage();
+        const totalPages = Math.ceil(totalHits / perPage);
+        if (!hitsLength || totalPages === currentPage) {
+          setIsShowLoadMore(false);
+          return;
+        }
+        setIsShowLoadMore(true);
+      };
 
-  handleSubmit = query => {
-    if (query.toLowerCase() === this.state.query.toLowerCase()) {
+      getGallery();
+    }
+  }, [query, currentPage]);
+
+  const handleSubmit = inputQuery => {
+    if (inputQuery.toLowerCase() === query.toLowerCase()) {
       Notify.warning(`You are already viewing images for "${query}" `);
       return;
     }
-    this.setState({
-      query: query,
-      page: 1,
-      images: [],
-    });
+
+    setImages([]);
+    setCurrentPage(1);
+    setQuery(inputQuery);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
-
-  showLoadMoreButton = (totalHits, hitsLength) => {
-    const perPage = getPerPage();
-    const Currentpage = this.state.page;
-    const totalPages = Math.ceil(totalHits / perPage);
-    if (!hitsLength || totalPages === Currentpage) {
-      this.setState({ showLoadMore: false });
-      return;
+  useEffect(() => {
+    if (currentPage > 1) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        left: 0,
+        behavior: 'smooth',
+      });
     }
-    this.setState({ showLoadMore: true });
-  };
+  });
 
-  render() {
-    const { images, showLoadMore, isLoading } = this.state;
-
-    return (
-      <Container>
-        <Searchbar onSubmit={this.handleSubmit} />
-        {images && <ImageGallery images={images} />}
-        {isLoading && <Loader />}
-        {showLoadMore && !isLoading && <Button onClick={this.loadMore} />}
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <Searchbar onSubmit={handleSubmit} />
+      {images && <ImageGallery images={images} />}
+      {isLoading && <Loader />}
+      {isShowLoadMore && !isLoading && (
+        <Button
+          onClick={() => {
+            setCurrentPage(prevPage => prevPage + 1);
+          }}
+        />
+      )}
+    </Container>
+  );
 }
 
 export default App;

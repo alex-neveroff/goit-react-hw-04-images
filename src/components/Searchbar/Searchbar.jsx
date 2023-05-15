@@ -5,19 +5,19 @@ import { ReactComponent as SearchIcon } from '../../icons/search.svg';
 import { SearchbarForm, SearchbarHeader } from './Searchbar.styled';
 
 function Searchbar({ onSubmit }) {
-  const [query, setQuery] = useState('');
+  const [inputQuery, setInputQuery] = useState('');
 
   const handleSearch = event => {
-    setQuery(event.currentTarget.value);
+    setInputQuery(event.currentTarget.value);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (query === '') {
+    if (inputQuery === '') {
       Notify.warning(`Enter something`);
       return;
     }
-    onSubmit(query);
+    onSubmit(inputQuery);
   };
 
   return (
@@ -33,7 +33,7 @@ function Searchbar({ onSubmit }) {
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"
-          value={query}
+          value={inputQuery}
           onChange={handleSearch}
         />
       </SearchbarForm>
