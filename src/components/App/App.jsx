@@ -6,7 +6,6 @@ import Searchbar from 'components/Searchbar/Searchbar';
 import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Loader from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
-import Modal from 'components/Modal/Modal';
 
 class App extends Component {
   state = {
@@ -100,13 +99,8 @@ class App extends Component {
     this.setState({ showLoadMore: true });
   };
 
-  imageLoaded = () => {
-    this.setState({ isLoading: false });
-  };
-
   render() {
-    const { images, largeImage, alt, showModal, showLoadMore, isLoading } =
-      this.state;
+    const { images, showLoadMore, isLoading } = this.state;
 
     return (
       <Container>
@@ -115,20 +109,7 @@ class App extends Component {
           <ImageGallery images={images} onClick={this.handleImageClick} />
         )}
         {isLoading && <Loader />}
-
         {showLoadMore && !isLoading && <Button onClick={this.loadMore} />}
-
-        {showModal && (
-          <Modal onClose={this.toggleModal}>
-            {isLoading && <Loader />}
-            <img
-              className="modal-content"
-              src={largeImage}
-              alt={alt}
-              onLoad={this.imageLoaded}
-            />
-          </Modal>
-        )}
       </Container>
     );
   }
