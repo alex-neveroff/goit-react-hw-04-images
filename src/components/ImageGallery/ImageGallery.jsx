@@ -6,8 +6,11 @@ import { Gallery } from './ImageGallery.styled';
 const ImageGallery = ({ images }) => {
   return (
     <Gallery>
-      {images.map(image => (
-        <ImageGalleryItem key={image.id} image={image} />
+      {images.map((image, index) => (
+        <ImageGalleryItem
+          key={`${image.id}${index !== 0 ? 'xxxxxxxxx' + index : ''}`}
+          image={image}
+        />
       ))}
     </Gallery>
   );
