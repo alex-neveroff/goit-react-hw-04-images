@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Gallery } from './ImageGallery.styled';
 
-function ImageGallery({ images }) {
+const ImageGallery = ({ images }) => {
   return (
     <Gallery>
       {images.map(image => (
@@ -11,7 +11,7 @@ function ImageGallery({ images }) {
       ))}
     </Gallery>
   );
-}
+};
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(PropTypes.object).isRequired,

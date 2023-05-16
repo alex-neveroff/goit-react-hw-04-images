@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ModalWindow, Overlay } from './Modal.styled';
 
-function Modal({ onClose, children }) {
+const Modal = ({ onClose, children }) => {
   useEffect(() => {
     const handleKeyDown = event => {
       if (event.code === 'Escape') {
@@ -28,7 +28,7 @@ function Modal({ onClose, children }) {
       <ModalWindow>{children}</ModalWindow>
     </Overlay>
   );
-}
+};
 
 Modal.propTypes = { onClose: PropTypes.func.isRequired };
 

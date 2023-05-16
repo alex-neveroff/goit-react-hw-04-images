@@ -7,7 +7,7 @@ import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Loader from 'components/Loader/Loader';
 import Button from 'components/Button/Button';
 
-function App() {
+const App = () => {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,6 +87,6 @@ function App() {
       )}
     </Container>
   );
-}
+};
 
 export default App;

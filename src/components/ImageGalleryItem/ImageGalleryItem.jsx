@@ -4,7 +4,7 @@ import { GalleryItem } from './ImageGalleryItem.styled';
 import Modal from 'components/Modal/Modal';
 import Loader from 'components/Loader/Loader';
 
-function ImageGalleryItem({ image }) {
+const ImageGalleryItem = ({ image }) => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { webformatURL, tags, largeImageURL } = image;
@@ -33,7 +33,7 @@ function ImageGalleryItem({ image }) {
       )}
     </GalleryItem>
   );
-}
+};
 ImageGalleryItem.propTypes = {
   image: PropTypes.object.isRequired,
 };

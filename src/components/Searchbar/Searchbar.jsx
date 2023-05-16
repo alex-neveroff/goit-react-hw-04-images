@@ -4,7 +4,7 @@ import { Notify } from 'notiflix';
 import { ReactComponent as SearchIcon } from '../../icons/search.svg';
 import { SearchbarForm, SearchbarHeader } from './Searchbar.styled';
 
-function Searchbar({ onSubmit }) {
+const Searchbar = ({ onSubmit }) => {
   const [inputQuery, setInputQuery] = useState('');
 
   const handleSearch = event => {
@@ -39,7 +39,7 @@ function Searchbar({ onSubmit }) {
       </SearchbarForm>
     </SearchbarHeader>
   );
-}
+};
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
