@@ -11,6 +11,7 @@ const App = () => {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [imageHeight, setImageHeight] = useState(0);
   const [isShowLoadMore, setIsShowLoadMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,9 +66,10 @@ const App = () => {
 
   useEffect(() => {
     if (currentPage > 1) {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        left: 0,
+      const scrollToPosition = 480;
+
+      window.scrollBy({
+        top: scrollToPosition,
         behavior: 'smooth',
       });
     }
