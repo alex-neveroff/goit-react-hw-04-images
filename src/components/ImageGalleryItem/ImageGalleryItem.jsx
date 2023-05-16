@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { GalleryItem } from './ImageGalleryItem.styled';
 import Modal from 'components/Modal/Modal';
 import Loader from 'components/Loader/Loader';
 
-const ImageGalleryItem = ({ image }) => {
+const ImageGalleryItem = forwardRef(({ image }, ref) => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { webformatURL, tags, largeImageURL } = image;
 
   return (
-    <GalleryItem>
+    <GalleryItem ref={ref}>
       <img
         className="galery-image"
         src={webformatURL}
@@ -33,7 +33,7 @@ const ImageGalleryItem = ({ image }) => {
       )}
     </GalleryItem>
   );
-};
+});
 ImageGalleryItem.propTypes = {
   image: PropTypes.object.isRequired,
 };

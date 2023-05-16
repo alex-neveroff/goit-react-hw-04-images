@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Notify } from 'notiflix';
 import { Container } from './App.styled';
 import { getImagesByName, getPerPage } from 'api/api';
@@ -11,9 +11,9 @@ const App = () => {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [imageHeight, setImageHeight] = useState(0);
   const [isShowLoadMore, setIsShowLoadMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const listItemRef = useRef(null);
 
   useEffect(() => {
     if (query) {
@@ -31,6 +31,7 @@ const App = () => {
               Notify.success(`Found ${totalHits} images for "${query}"`);
             }
           }
+
           setImages(prevImages => [...prevImages, ...hits]);
           showLoadMoreButton(totalHits, hits.length);
         } catch (error) {
@@ -42,6 +43,9 @@ const App = () => {
       const showLoadMoreButton = (totalHits, hitsLength) => {
         const perPage = getPerPage();
         const totalPages = Math.ceil(totalHits / perPage);
+        if (totalPages === currentPage && currentPage !== 1) {
+          Notify.success(`This is the last page for "${query}"`);
+        }
         if (!hitsLength || totalPages === currentPage) {
           setIsShowLoadMore(false);
           return;
@@ -65,20 +69,27 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (currentPage > 1) {
-      const scrollToPosition = 480;
+    const listItemElement = listItemRef.current;
+    const ulElement = document.querySelector('ul');
+    const ulStyles = window.getComputedStyle(ulElement);
+    const gap = Number.parseInt(ulStyles.getPropertyValue('gap'));
 
-      window.scrollBy({
-        top: scrollToPosition,
-        behavior: 'smooth',
-      });
+    if (listItemElement) {
+      const listItemHeight = listItemElement.getBoundingClientRect().height;
+      if (currentPage > 1) {
+        window.scrollBy({
+          top: (listItemHeight - gap) * 2,
+          behavior: 'smooth',
+        });
+      }
     }
   });
 
   return (
     <Container>
       <Searchbar onSubmit={handleSubmit} />
-      {images && <ImageGallery images={images} />}
+
+      {images && <ImageGallery images={images} listItemRef={listItemRef} />}
       {isLoading && <Loader />}
       {isShowLoadMore && !isLoading && (
         <Button

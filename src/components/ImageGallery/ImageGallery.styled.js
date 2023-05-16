@@ -6,5 +6,5 @@ export const Gallery = styled.ul`
   align-items: center;
   gap: 16px;
   width: 100%;
-  padding: 10px;
+  padding: 0px 10px;
 `;
