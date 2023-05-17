@@ -8,7 +8,7 @@ const ImageGallery = ({ images, listItemRef }) => {
     <Gallery>
       {images.map((image, index) => (
         <ImageGalleryItem
-          key={`${image.id}${index !== 0 ? 'xxxxxxxxx' + index : ''}`}
+          key={`${image.id}${index !== 0 ? 'www' + index : ''}`}
           image={image}
           ref={listItemRef}
         />

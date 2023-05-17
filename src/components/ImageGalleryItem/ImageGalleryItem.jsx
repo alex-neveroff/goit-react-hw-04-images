@@ -34,6 +34,7 @@ const ImageGalleryItem = forwardRef(({ image }, ref) => {
     </GalleryItem>
   );
 });
+
 ImageGalleryItem.propTypes = {
   image: PropTypes.object.isRequired,
 };
